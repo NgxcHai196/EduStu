@@ -57,6 +57,26 @@ EduStu/
 `-- README.md
 ```
 
+### mo ta giao dien
+<img width="899" height="675" alt="Screenshot 2026-04-14 080459" src="https://github.com/user-attachments/assets/1d9c6b17-2153-4830-95e4-603b06b10d9d" />
+<img width="916" height="720" alt="Screenshot 2026-04-14 080523" src="https://github.com/user-attachments/assets/4517aecc-5526-4ca0-b893-0fa64bb0a729" />
+<img width="888" height="707" alt="Screenshot 2026-04-14 080548" src="https://github.com/user-attachments/assets/6547520f-e75a-438f-9933-33808eee1896" />
+<img width="721" height="671" alt="Screenshot 2026-04-14 081926" src="https://github.com/user-attachments/assets/34fc198c-4208-4b0e-adc2-eb423b3a947d" />
+<img width="933" height="696" alt="Screenshot 2026-04-14 081600" src="https://github.com/user-attachments/assets/1ed611ea-bf60-48ff-9284-832399a7c52e" />
+<img width="887" height="721" alt="Screenshot 2026-04-14 080618" src="https://github.com/user-attachments/assets/dd98582a-4cae-416d-8ef4-e6963209dc84" />
+<img width="862" height="735" alt="Screenshot 2026-04-14 080610" src="https://github.com/user-attachments/assets/952eb92f-a4f3-45b7-8106-69cb12419cf8" />
+<img width="889" height="737" alt="Screenshot 2026-04-14 080601" src="https://github.com/user-attachments/assets/949454b2-a340-42fd-93a3-8dff307dd986" />
+
+
+### mo ta chuc nang
+<img width="722" height="679" alt="image" src="https://github.com/user-attachments/assets/db6590cf-1b20-48f6-80e7-ef2ee09e9d7c" />
+<img width="706" height="698" alt="image" src="https://github.com/user-attachments/assets/c3070493-5150-4522-b441-eb2ee8fe085c" />
+<img width="725" height="691" alt="image" src="https://github.com/user-attachments/assets/7b469473-9da6-4890-94f8-172dab0bc9bf" />
+<img width="717" height="770" alt="image" src="https://github.com/user-attachments/assets/9bf81a67-4153-4fc3-999e-ddfd28c71200" />
+<img width="710" height="641" alt="image" src="https://github.com/user-attachments/assets/a0094dd2-4324-4c0f-96d6-5b4d9a2be684" />
+<img width="712" height="749" alt="image" src="https://github.com/user-attachments/assets/62a699ca-8ad4-44ab-95c2-2966cd5ee719" />
+
+
 ## Kien truc
 
 Frontend duoc tach thanh 4 lop chinh:
