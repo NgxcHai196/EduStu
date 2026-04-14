@@ -195,3 +195,6 @@ Cac model hien tai dang tham chieu den nhung endpoint sau:
 - Them unit test cho logic tinh diem, GPA va hoc phi
 - Bo sung giao dien va controller
 - Xay dung backend FastAPI hoac chinh sua model de phu hop backend san co
+![alt text](assets/image.png) 
+![alt text](assets/image2.png)
+![alt text](assets/image1.png)  
