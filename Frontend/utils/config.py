@@ -7,10 +7,10 @@ APP_NAME = "EduStu"
 APP_VERSION = "1.0.0"
 
 DB_HOST = "localhost"
-DB_NAME = "edustu"
+DB_NAME = "edustu" # Ten database de theo tren may
 DB_PORT = 3306
 DB_USER = "root"
-DB_PASSWORD = "110252702Nhat"
+DB_PASSWORD = "110252702Nhat" # Mat khau de theo tren may
 
 # Mau sac dung trong QSS
 PRIMARY = "#1a1a2e"
