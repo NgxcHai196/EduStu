@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("EduStu")
         self.setMinimumSize(1200, 700)
-        self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT};")
+        self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT}; font-family: Roboto;")
         self._build()
         self._load_views()
         self._nav_to("dashboard")
@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         root.addWidget(self._make_sidebar())
 
         self.stack = QStackedWidget()
-        self.stack.setStyleSheet(f"background: {PRIMARY};")
+        self.stack.setStyleSheet(f"background: {PRIMARY}; font-family: Roboto;")
         root.addWidget(self.stack)
 
     def _make_sidebar(self) -> QFrame:
@@ -48,7 +48,8 @@ class MainWindow(QMainWindow):
         sb.setStyleSheet(f"""
             QFrame {{
                 background: {SECONDARY};
-                border-right: 1px solid {BORDER};
+                border-right: 1.5px solid {BORDER};
+                font-family: Roboto;
             }}
         """)
         layout = QVBoxLayout(sb)
@@ -62,8 +63,8 @@ class MainWindow(QMainWindow):
         bl = QHBoxLayout(brand)
         bl.setContentsMargins(16, 0, 16, 0)
         lbl = QLabel("EduStu")
-        lbl.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
-        lbl.setStyleSheet(f"color: {HIGHLIGHT}; border: none;")
+        lbl.setFont(QFont("Roboto", 18, QFont.Weight.Bold))
+        lbl.setStyleSheet(f"color: {HIGHLIGHT}; border: none; letter-spacing: 1px;")
         bl.addWidget(lbl)
         layout.addWidget(brand)
 
@@ -91,40 +92,42 @@ class MainWindow(QMainWindow):
 
         av_row = QHBoxLayout()
         av = QLabel(user.avatar_text if user else "?")
-        av.setFixedSize(34, 34)
+        av.setFixedSize(38, 38)
         av.setAlignment(Qt.AlignmentFlag.AlignCenter)
         av.setStyleSheet(f"""
-            background: {ACCENT};
-            color: {TEXT_LIGHT};
-            border-radius: 17px;
+            background: #DBEAFE;
+            color: {ACCENT};
+            border-radius: 19px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 15px;
+            font-family: Roboto;
             border: none;
         """)
         name_lbl = QLabel(user.ho_ten if user else "")
-        name_lbl.setStyleSheet(f"font-size: 12px; font-weight: 600; color: {TEXT_LIGHT}; border: none;")
+        name_lbl.setStyleSheet(f"font-size: 13px; font-weight: 600; color: {TEXT_LIGHT}; border: none; font-family: Roboto;")
         name_lbl.setWordWrap(True)
         av_row.addWidget(av)
         av_row.addWidget(name_lbl, stretch=1)
         ul.addLayout(av_row)
 
         role_lbl = QLabel(user.role_label if user else "")
-        role_lbl.setStyleSheet(f"font-size: 10px; color: {TEXT_MUTED}; border: none; padding-left: 2px;")
+        role_lbl.setStyleSheet(f"font-size: 12px; color: {TEXT_MUTED}; border: none; padding-left: 2px; font-family: Roboto;")
         ul.addWidget(role_lbl)
 
         btn_logout = QPushButton("Đăng xuất")
-        btn_logout.setFixedHeight(28)
+        btn_logout.setFixedHeight(32)
         btn_logout.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_logout.setStyleSheet(f"""
             QPushButton {{
-                background: transparent;
-                color: {TEXT_MUTED};
-                border: 1px solid {BORDER};
-                border-radius: 5px;
-                font-size: 11px;
+                background: #FEF2F2;
+                color: #EF4444;
+                border: 1px solid #FECACA;
+                border-radius: 7px;
+                font-size: 13px;
+                font-family: Roboto;
                 margin-top: 4px;
             }}
-            QPushButton:hover {{ color: {HIGHLIGHT}; border-color: {HIGHLIGHT}; }}
+            QPushButton:hover {{ background: #EF4444; color: white; border-color: #EF4444; }}
         """)
         btn_logout.clicked.connect(self._logout)
         ul.addWidget(btn_logout)
@@ -133,28 +136,30 @@ class MainWindow(QMainWindow):
 
     def _make_nav_btn(self, key: str, label: str) -> QPushButton:
         btn = QPushButton(label)
-        btn.setFixedHeight(42)
+        btn.setFixedHeight(46)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.setCheckable(True)
         btn.setStyleSheet(f"""
             QPushButton {{
                 text-align: left;
-                padding-left: 16px;
+                padding-left: 20px;
                 border: none;
                 border-left: 3px solid transparent;
                 background: transparent;
-                font-size: 13px;
+                font-size: 14px;
+                font-family: Roboto;
                 color: {TEXT_MUTED};
             }}
             QPushButton:hover {{
-                background: rgba(255,255,255,0.05);
-                color: {TEXT_LIGHT};
+                background: #EFF6FF;
+                color: {ACCENT};
+                border-left: 3px solid #BFDBFE;
             }}
             QPushButton:checked {{
-                background: rgba(233,69,96,0.12);
-                color: {HIGHLIGHT};
+                background: #DBEAFE;
+                color: {ACCENT};
                 border-left: 3px solid {HIGHLIGHT};
-                font-weight: 600;
+                font-weight: 700;
             }}
         """)
         btn.clicked.connect(lambda: self._nav_to(key))

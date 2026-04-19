@@ -90,6 +90,14 @@ class GradeController:
 
         self._run(_do, on_success, on_error)
 
+    def load_gpa(self, mssv: str, on_success=None, on_error=None) -> None:
+        """
+        Lấy GPA chi tiết theo từng học kỳ của sinh viên.
+        on_success nhận: dict {gpa_tich_luy, tin_chi_dat, tin_chi_dang_ky,
+                               xep_loai, canh_bao, by_ky: list[dict]}
+        """
+        self._run(lambda: self._svc.get_gpa(mssv), on_success, on_error)
+
     def update_grade(
         self,
         grade_id: int,

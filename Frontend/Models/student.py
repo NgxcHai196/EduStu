@@ -16,7 +16,9 @@ class Student:
     khoa:           str = ""
     email:          str = ""
     so_dien_thoai:  str = ""
-    dia_chi:        str = ""
+    dia_chi:        str = ""       # nơi ở hiện tại
+    que_quan:       str = ""       # quê quán / nơi sinh
+    cccd:           str = ""       # số CCCD / CMND
     trang_thai:     str = "Đang học"   # "Đang học" | "Bảo lưu" | "Thôi học" | "Cảnh báo"
     gpa:            float | None = None
 
@@ -80,6 +82,8 @@ class Student:
             email=data.get("email", ""),
             so_dien_thoai=data.get("so_dien_thoai", ""),
             dia_chi=data.get("dia_chi", ""),
+            que_quan=data.get("que_quan", ""),
+            cccd=data.get("cccd", ""),
             trang_thai=data.get("trang_thai", "Đang học"),
             gpa=data.get("gpa"),
         )
@@ -96,6 +100,8 @@ class Student:
             "email":          self.email,
             "so_dien_thoai":  self.so_dien_thoai,
             "dia_chi":        self.dia_chi,
+            "que_quan":       self.que_quan,
+            "cccd":           self.cccd,
             "trang_thai":     self.trang_thai,
         }
 

@@ -18,100 +18,118 @@ QSS_TABLE = f"""
 QTableWidget {{
     background: {SECONDARY};
     border: 1px solid {BORDER};
-    border-radius: 8px;
+    border-radius: 10px;
     color: {TEXT_LIGHT};
-    font-size: 13px;
+    font-size: 14px;
+    font-family: Roboto;
     outline: none;
     gridline-color: {BORDER};
 }}
 QTableWidget::item {{
-    padding: 6px 10px;
+    padding: 8px 12px;
     border: none;
 }}
 QTableWidget::item:selected {{
-    background: {ACCENT};
-    color: {TEXT_LIGHT};
+    background: #DBEAFE;
+    color: #1E3A8A;
+}}
+QTableWidget::item:alternate {{
+    background: #F8FAFC;
 }}
 QHeaderView::section {{
-    background: {PRIMARY};
+    background: #EFF6FF;
     color: {TEXT_MUTED};
-    font-size: 11px;
-    font-weight: 600;
-    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: Roboto;
+    padding: 10px 12px;
     border: none;
-    border-bottom: 1px solid {BORDER};
+    border-bottom: 2px solid {BORDER};
 }}
 QScrollBar:vertical {{
-    background: {PRIMARY};
-    width: 6px;
-    border-radius: 3px;
+    background: #F1F5F9;
+    width: 8px;
+    border-radius: 4px;
 }}
 QScrollBar::handle:vertical {{
+    background: #CBD5E1;
+    border-radius: 4px;
+}}
+QScrollBar::handle:vertical:hover {{
     background: {ACCENT};
-    border-radius: 3px;
 }}
 """
 
 QSS_BTN_PRIMARY = f"""
 QPushButton {{
     background: {ACCENT};
-    color: {TEXT_LIGHT};
+    color: #FFFFFF;
     border: none;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 600;
-    padding: 0 16px;
+    font-family: Roboto;
+    padding: 0 20px;
 }}
-QPushButton:hover   {{ background: #1a4a80; }}
-QPushButton:pressed {{ background: #0a2a50; }}
+QPushButton:hover   {{ background: #1D4ED8; }}
+QPushButton:pressed {{ background: #1E40AF; }}
 QPushButton:disabled {{ background: {BORDER}; color: {TEXT_MUTED}; }}
 """
 
 QSS_BTN_GHOST = f"""
 QPushButton {{
-    background: transparent;
+    background: {SECONDARY};
     color: {TEXT_MUTED};
     border: 1px solid {BORDER};
-    border-radius: 6px;
-    font-size: 12px;
-    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Roboto;
+    padding: 0 16px;
 }}
-QPushButton:hover   {{ background: {SECONDARY}; color: {TEXT_LIGHT}; border-color: {TEXT_MUTED}; }}
-QPushButton:pressed {{ background: {ACCENT}; }}
+QPushButton:hover   {{ background: #F1F5F9; color: {TEXT_LIGHT}; border-color: #94A3B8; }}
+QPushButton:pressed {{ background: #E2E8F0; }}
 """
 
 QSS_BTN_DANGER = f"""
 QPushButton {{
-    background: transparent;
+    background: #FEF2F2;
     color: {DANGER};
-    border: 1px solid {DANGER};
-    border-radius: 6px;
-    font-size: 12px;
-    padding: 0 12px;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Roboto;
+    padding: 0 14px;
 }}
-QPushButton:hover   {{ background: {DANGER}; color: white; }}
-QPushButton:pressed {{ background: #a01010; }}
+QPushButton:hover   {{ background: {DANGER}; color: white; border-color: {DANGER}; }}
+QPushButton:pressed {{ background: #DC2626; }}
 """
 
 QSS_INPUT = f"""
 QLineEdit, QComboBox, QDateEdit, QSpinBox, QDoubleSpinBox {{
-    background: {PRIMARY};
+    background: {SECONDARY};
     color: {TEXT_LIGHT};
-    border: 1px solid {BORDER};
-    border-radius: 6px;
-    padding: 0 10px;
-    font-size: 13px;
-    height: 34px;
+    border: 1.5px solid {BORDER};
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-family: Roboto;
+    height: 38px;
 }}
-QLineEdit:focus, QComboBox:focus, QDateEdit:focus {{
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus {{
     border-color: {ACCENT};
+    background: #EFF6FF;
 }}
-QComboBox::drop-down {{ border: none; width: 20px; }}
+QLineEdit::placeholder {{ color: #94A3B8; }}
+QComboBox::drop-down {{ border: none; width: 24px; }}
 QComboBox QAbstractItemView {{
     background: {SECONDARY};
     color: {TEXT_LIGHT};
     border: 1px solid {BORDER};
-    selection-background-color: {ACCENT};
+    font-size: 14px;
+    font-family: Roboto;
+    selection-background-color: #DBEAFE;
+    selection-color: #1E3A8A;
+    outline: none;
 }}
 """
 
@@ -127,7 +145,7 @@ class BaseView(QWidget):
     def __init__(self):
         super().__init__()
         self._workers: list[ApiWorker] = []
-        self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT};")
+        self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT}; font-family: Roboto;")
         self._build_base()
         self.build_ui()
 
@@ -140,10 +158,10 @@ class BaseView(QWidget):
         hdr = QHBoxLayout()
         lbl_col = QVBoxLayout()
         self._lbl_title = QLabel(self.PAGE_TITLE)
-        self._lbl_title.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
+        self._lbl_title.setFont(QFont("Roboto", 20, QFont.Weight.Bold))
         self._lbl_title.setStyleSheet(f"color: {TEXT_LIGHT};")
         self._lbl_sub = QLabel(self.PAGE_SUB)
-        self._lbl_sub.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 12px;")
+        self._lbl_sub.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 14px; font-family: Roboto;")
         lbl_col.addWidget(self._lbl_title)
         lbl_col.addWidget(self._lbl_sub)
         hdr.addLayout(lbl_col)
@@ -177,7 +195,7 @@ class BaseView(QWidget):
         t.setShowGrid(True)
         t.setAlternatingRowColors(False)
         t.setStyleSheet(QSS_TABLE)
-        t.verticalHeader().setDefaultSectionSize(38)
+        t.verticalHeader().setDefaultSectionSize(42)
         return t
 
     def make_btn(self, text: str, style: str = "ghost") -> QPushButton:
@@ -207,7 +225,7 @@ class BaseView(QWidget):
         item = QTableWidgetItem(str(text))
         item.setTextAlignment(align)
         if bold:
-            f = QFont("Segoe UI", 13, QFont.Weight.Bold)
+            f = QFont("Roboto", 14, QFont.Weight.Bold)
             item.setFont(f)
         if color:
             item.setForeground(QColor(color))

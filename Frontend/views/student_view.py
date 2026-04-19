@@ -2,7 +2,7 @@ from __future__ import annotations
 from PyQt6.QtWidgets import (
     QHBoxLayout, QVBoxLayout, QLineEdit, QComboBox,
     QMessageBox, QFileDialog, QWidget, QPushButton,
-    QDialog, QGridLayout, QLabel, QDateEdit, QFrame
+    QDialog, QGridLayout, QLabel, QDateEdit, QFrame,
 )
 from PyQt6.QtCore import Qt, QTimer, QDate
 from PyQt6.QtGui import QFont
@@ -104,8 +104,9 @@ class StudentView(BaseView):
             hl.setContentsMargins(4, 2, 4, 2)
             hl.setSpacing(4)
             for txt, fn, clr in [
-                ("Sửa",  lambda _, m=mssv: self._open_edit(m), ACCENT),
-                ("Xóa",  lambda _, m=mssv: self._delete(m),    DANGER),
+                ("Xem",  lambda _, m=mssv: self._open_profile(m), SUCCESS),
+                ("Sửa",  lambda _, m=mssv: self._open_edit(m),    ACCENT),
+                ("Xóa",  lambda _, m=mssv: self._delete(m),       DANGER),
             ]:
                 b = QPushButton(txt)
                 b.setFixedHeight(26)
@@ -132,6 +133,11 @@ class StudentView(BaseView):
         c.setMinimumWidth(140)
         c.setStyleSheet(QSS_INPUT)
         return c
+
+    def _open_profile(self, mssv: str):
+        raw = self._ctrl._svc.get_by_mssv(mssv)
+        dlg = StudentProfileDialog(data=raw)
+        dlg.exec()
 
     def _open_add(self):
         dlg = StudentForm(on_save=self._load)
@@ -168,7 +174,7 @@ class StudentForm(QDialog):
         self._ctrl    = StudentController()
         self._is_edit = bool(data)
         self.setWindowTitle("Sửa sinh viên" if self._is_edit else "Thêm sinh viên")
-        self.setFixedSize(520, 560)
+        self.setFixedSize(520, 660)
         self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT};")
         self._build()
         if data:
@@ -212,20 +218,22 @@ class StudentForm(QDialog):
             c.setStyleSheet(QSS_INPUT)
             return c
 
-        self.f_mssv   = inp("VD: SV001")
-        self.f_hoten  = inp("Nguyễn Văn A")
-        self.f_email  = inp("sv@abc.edu.vn")
-        self.f_sdt    = inp("0901234567")
-        self.f_lop    = inp("CNTT-K67")
-        self.f_diachi = inp("Địa chỉ")
-        self.f_ns     = QDateEdit()
+        self.f_mssv    = inp("VD: SV001")
+        self.f_hoten   = inp("Nguyễn Văn A")
+        self.f_email   = inp("sv@abc.edu.vn")
+        self.f_sdt     = inp("0901234567")
+        self.f_lop     = inp("CNTT-K67")
+        self.f_diachi  = inp("Số nhà, đường, phường/xã, tỉnh/thành")
+        self.f_quequan = inp("Tỉnh / thành phố quê quán")
+        self.f_cccd    = inp("12 số CCCD / 9 số CMND")
+        self.f_ns      = QDateEdit()
         self.f_ns.setCalendarPopup(True)
         self.f_ns.setDate(QDate(2003, 1, 1))
         self.f_ns.setFixedHeight(34)
         self.f_ns.setStyleSheet(QSS_INPUT)
-        self.f_gt  = cmb(GIOI_TINH)
+        self.f_gt   = cmb(GIOI_TINH)
         self.f_khoa = cmb(KHOA_LIST)
-        self.f_tt  = cmb(TRANG_THAI_SV)
+        self.f_tt   = cmb(TRANG_THAI_SV)
 
         rows = [
             ("Mã sinh viên *", self.f_mssv),
@@ -236,7 +244,9 @@ class StudentForm(QDialog):
             ("Số điện thoại",  self.f_sdt),
             ("Khoa *",         self.f_khoa),
             ("Lớp *",          self.f_lop),
-            ("Địa chỉ",        self.f_diachi),
+            ("Quê quán",       self.f_quequan),
+            ("Nơi ở hiện tại", self.f_diachi),
+            ("Số CCCD/CMND",   self.f_cccd),
             ("Trạng thái",     self.f_tt),
         ]
         for i, (l, w) in enumerate(rows):
@@ -282,9 +292,11 @@ class StudentForm(QDialog):
         self.f_mssv.setReadOnly(True)
         self.f_hoten.setText(d.get("ho_ten", ""))
         self.f_email.setText(d.get("email", ""))
-        self.f_sdt.setText(d.get("sdt", ""))
+        self.f_sdt.setText(d.get("sdt", d.get("so_dien_thoai", "")))
         self.f_lop.setText(d.get("lop", ""))
         self.f_diachi.setText(d.get("dia_chi", ""))
+        self.f_quequan.setText(d.get("que_quan", ""))
+        self.f_cccd.setText(d.get("cccd", ""))
         ns = d.get("ngay_sinh", "")
         if ns:
             self.f_ns.setDate(QDate.fromString(ns[:10], "yyyy-MM-dd"))
@@ -295,16 +307,18 @@ class StudentForm(QDialog):
 
     def _collect(self) -> dict:
         return {
-            "mssv":       self.f_mssv.text().strip(),
-            "ho_ten":     self.f_hoten.text().strip(),
-            "ngay_sinh":  self.f_ns.date().toString("yyyy-MM-dd"),
-            "gioi_tinh":  self.f_gt.currentText(),
-            "email":      self.f_email.text().strip(),
-            "sdt":        self.f_sdt.text().strip(),
-            "khoa":       self.f_khoa.currentText(),
-            "lop":        self.f_lop.text().strip(),
-            "dia_chi":    self.f_diachi.text().strip(),
-            "trang_thai": self.f_tt.currentText(),
+            "mssv":          self.f_mssv.text().strip(),
+            "ho_ten":        self.f_hoten.text().strip(),
+            "ngay_sinh":     self.f_ns.date().toString("yyyy-MM-dd"),
+            "gioi_tinh":     self.f_gt.currentText(),
+            "email":         self.f_email.text().strip(),
+            "so_dien_thoai": self.f_sdt.text().strip(),
+            "khoa":          self.f_khoa.currentText(),
+            "lop":           self.f_lop.text().strip(),
+            "dia_chi":       self.f_diachi.text().strip(),
+            "que_quan":      self.f_quequan.text().strip(),
+            "cccd":          self.f_cccd.text().strip(),
+            "trang_thai":    self.f_tt.currentText(),
         }
 
     def _save(self):
@@ -326,3 +340,184 @@ class StudentForm(QDialog):
             self._ctrl.update(data["mssv"], data, on_success=ok, on_error=err)
         else:
             self._ctrl.create(data, on_success=ok, on_error=err)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Dialog: Thông tin cá nhân sinh viên
+# ══════════════════════════════════════════════════════════════════════════════
+class StudentProfileDialog(QDialog):
+    """Hiển thị toàn bộ hồ sơ cá nhân của sinh viên (chỉ đọc)."""
+
+    def __init__(self, data: dict):
+        super().__init__()
+        self._data = data
+        ho_ten = data.get("ho_ten", "Sinh viên")
+        self.setWindowTitle(f"Hồ sơ sinh viên — {ho_ten}")
+        self.setFixedSize(480, 560)
+        self.setStyleSheet(f"background:{PRIMARY};color:{TEXT_LIGHT};")
+        self._build(data)
+
+    def _build(self, d: dict):
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
+
+        # ── Header với avatar ─────────────────────────────────────────────
+        header = QFrame()
+        header.setStyleSheet(
+            f"QFrame{{background:{SECONDARY};"
+            f"border-bottom:1px solid {BORDER};}}"
+        )
+        header.setFixedHeight(130)
+        hl = QHBoxLayout(header)
+        hl.setContentsMargins(28, 20, 28, 20)
+        hl.setSpacing(18)
+
+        # Avatar tròn
+        from models.student import Student as _Sv
+        sv_tmp = _Sv(mssv=d.get("mssv","?"), ho_ten=d.get("ho_ten","?"))
+        av = QLabel(sv_tmp.avatar_text)
+        av.setFixedSize(70, 70)
+        av.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        av.setStyleSheet(
+            f"background:{ACCENT};color:{TEXT_LIGHT};border-radius:35px;"
+            f"font-size:22px;font-weight:700;border:none;"
+        )
+
+        # Tên + MSSV + badge trạng thái
+        info_col = QVBoxLayout()
+        info_col.setSpacing(4)
+
+        name_lbl = QLabel(d.get("ho_ten", "—"))
+        name_lbl.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
+        name_lbl.setStyleSheet(f"color:{TEXT_LIGHT};border:none;")
+
+        mssv_lbl = QLabel(d.get("mssv", ""))
+        mssv_lbl.setStyleSheet(f"color:{TEXT_MUTED};font-size:12px;border:none;")
+
+        tt = d.get("trang_thai", "")
+        tt_colors = {
+            "Đang học": SUCCESS, "Dang hoc": SUCCESS,
+            "Thôi học": DANGER,  "Thoi hoc": DANGER,
+            "Bảo lưu":  WARNING, "Bao luu":  WARNING,
+        }
+        tt_clr = tt_colors.get(tt, TEXT_MUTED)
+        tt_lbl = QLabel(f"● {tt}")
+        tt_lbl.setStyleSheet(
+            f"color:{tt_clr};font-size:12px;font-weight:600;border:none;"
+        )
+
+        info_col.addWidget(name_lbl)
+        info_col.addWidget(mssv_lbl)
+        info_col.addWidget(tt_lbl)
+        info_col.addStretch()
+
+        hl.addWidget(av)
+        hl.addLayout(info_col)
+        root.addWidget(header)
+
+        # ── Body: danh sách thông tin ──────────────────────────────────────
+        body = QFrame()
+        body.setStyleSheet(f"QFrame{{background:{PRIMARY};}}")
+        bl = QVBoxLayout(body)
+        bl.setContentsMargins(28, 20, 28, 20)
+        bl.setSpacing(0)
+
+        from utils.helpers import fmt_date
+
+        # Nhóm thông tin cơ bản
+        self._section(bl, "Thông tin cơ bản")
+        rows_basic = [
+            ("Mã sinh viên",   d.get("mssv", "—")),
+            ("Họ và tên",      d.get("ho_ten", "—")),
+            ("Ngày sinh",      fmt_date(d.get("ngay_sinh", ""))),
+            ("Giới tính",      d.get("gioi_tinh", "—")),
+            ("Khoa",           d.get("khoa", "—")),
+            ("Lớp",            d.get("lop", "—")),
+        ]
+        for label, value in rows_basic:
+            self._info_row(bl, label, value)
+
+        sep = QFrame()
+        sep.setFrameShape(QFrame.Shape.HLine)
+        sep.setStyleSheet(f"color:{BORDER};margin:12px 0;")
+        bl.addWidget(sep)
+
+        # Nhóm liên lạc & cá nhân
+        self._section(bl, "Liên lạc & Cư trú")
+        rows_contact = [
+            ("Số điện thoại",  d.get("so_dien_thoai", d.get("sdt", "—"))),
+            ("Email",          d.get("email", "—")),
+            ("Quê quán",       d.get("que_quan", "—") or "—"),
+            ("Nơi ở hiện tại", d.get("dia_chi", "—") or "—"),
+        ]
+        for label, value in rows_contact:
+            self._info_row(bl, label, value)
+
+        sep2 = QFrame()
+        sep2.setFrameShape(QFrame.Shape.HLine)
+        sep2.setStyleSheet(f"color:{BORDER};margin:12px 0;")
+        bl.addWidget(sep2)
+
+        # Nhóm giấy tờ
+        self._section(bl, "Giấy tờ tùy thân")
+        cccd_val = d.get("cccd", "") or "—"
+        self._info_row(bl, "Số CCCD / CMND", cccd_val)
+
+        bl.addStretch()
+        root.addWidget(body)
+
+        # ── Footer: nút Đóng ──────────────────────────────────────────────
+        footer = QFrame()
+        footer.setStyleSheet(
+            f"QFrame{{background:{SECONDARY};"
+            f"border-top:1px solid {BORDER};}}"
+        )
+        footer.setFixedHeight(56)
+        fl = QHBoxLayout(footer)
+        fl.setContentsMargins(28, 0, 28, 0)
+        fl.addStretch()
+        btn_close = QPushButton("Đóng")
+        btn_close.setFixedHeight(34)
+        btn_close.setFixedWidth(100)
+        btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
+        btn_close.setStyleSheet(
+            f"QPushButton{{background:transparent;color:{TEXT_MUTED};"
+            f"border:1px solid {BORDER};border-radius:6px;font-size:13px;}}"
+            f"QPushButton:hover{{color:{TEXT_LIGHT};}}"
+        )
+        btn_close.clicked.connect(self.accept)
+        fl.addWidget(btn_close)
+        root.addWidget(footer)
+
+    # ── Helpers layout ────────────────────────────────────────────────────
+    def _section(self, layout: QVBoxLayout, title: str):
+        lbl = QLabel(title.upper())
+        lbl.setStyleSheet(
+            f"color:{ACCENT};font-size:10px;font-weight:700;"
+            f"letter-spacing:1px;border:none;margin-bottom:6px;"
+        )
+        layout.addWidget(lbl)
+
+    def _info_row(self, layout: QVBoxLayout, label: str, value: str):
+        row = QHBoxLayout()
+        row.setSpacing(12)
+
+        lbl = QLabel(label)
+        lbl.setFixedWidth(140)
+        lbl.setStyleSheet(f"color:{TEXT_MUTED};font-size:12px;border:none;")
+
+        val = QLabel(value)
+        val.setStyleSheet(
+            f"color:{TEXT_LIGHT};font-size:13px;font-weight:500;border:none;"
+        )
+        val.setWordWrap(True)
+
+        row.addWidget(lbl)
+        row.addWidget(val, stretch=1)
+
+        wrapper = QWidget()
+        wrapper.setStyleSheet("background:transparent;")
+        wrapper.setLayout(row)
+        wrapper.setFixedHeight(30)
+        layout.addWidget(wrapper)

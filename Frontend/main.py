@@ -7,33 +7,39 @@ from utils.config import APP_NAME, PRIMARY
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName(APP_NAME)
-    app.setFont(QFont("Segoe UI", 10))
+    app.setFont(QFont("Roboto", 11))
     app.setStyleSheet(f"""
         QToolTip {{
-            background: #16213e;
-            color: #eaeaea;
-            border: 1px solid #2a2a4a;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 12px;
+            background: #FFFFFF;
+            color: #1E293B;
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 13px;
+            font-family: Roboto;
         }}
         QMessageBox {{
-            background: #1a1a2e;
-            color: #eaeaea;
+            background: #F0F4F8;
+            color: #1E293B;
+            font-family: Roboto;
         }}
         QMessageBox QLabel {{
-            color: #eaeaea;
+            color: #1E293B;
+            font-size: 14px;
+            font-family: Roboto;
         }}
         QMessageBox QPushButton {{
-            background: #0f3460;
-            color: #eaeaea;
+            background: #2563EB;
+            color: #FFFFFF;
             border: none;
-            border-radius: 5px;
-            padding: 5px 16px;
-            min-width: 70px;
+            border-radius: 6px;
+            padding: 6px 18px;
+            min-width: 80px;
+            font-size: 13px;
+            font-family: Roboto;
         }}
         QMessageBox QPushButton:hover {{
-            background: #1a4a80;
+            background: #1D4ED8;
         }}
     """)
 

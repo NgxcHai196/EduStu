@@ -12,19 +12,19 @@ DB_PORT = 3306
 DB_USER = "root"
 DB_PASSWORD = "110252702Nhat" # Mat khau de theo tren may
 
-# Mau sac dung trong QSS
-PRIMARY = "#1a1a2e"
-SECONDARY = "#16213e"
-ACCENT = "#0f3460"
-HIGHLIGHT = "#e94560"
-TEXT_LIGHT = "#eaeaea"
-TEXT_MUTED = "#a0a0b0"
-BORDER = "#2a2a4a"
-WHITE = "#ffffff"
-SUCCESS = "#2ecc71"
-WARNING = "#f39c12"
-DANGER = "#e74c3c"
-INFO = "#3498db"
+# Mau sac dung trong QSS — Light theme
+PRIMARY   = "#F0F4F8"   # background chinh
+SECONDARY = "#FFFFFF"   # sidebar / card
+ACCENT    = "#2563EB"   # blue chinh (action)
+HIGHLIGHT = "#2563EB"   # brand / active
+TEXT_LIGHT = "#1E293B"  # chu tren nen sang (dark text)
+TEXT_MUTED = "#64748B"  # chu phu
+BORDER    = "#CBD5E1"   # vien ngoai
+WHITE     = "#FFFFFF"
+SUCCESS   = "#10B981"
+WARNING   = "#F59E0B"
+DANGER    = "#EF4444"
+INFO      = "#3B82F6"
 
 # Cau hinh nghiep vu
 TRONG_SO_GK = 0.4

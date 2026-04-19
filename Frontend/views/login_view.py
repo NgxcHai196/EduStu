@@ -16,8 +16,8 @@ class LoginView(QWidget):
         self._on_success = on_success
         self._ctrl = AuthController()
         self.setWindowTitle("EduStu — Đăng nhập")
-        self.setFixedSize(420, 520)
-        self.setStyleSheet(f"background: {PRIMARY};")
+        self.setFixedSize(440, 540)
+        self.setStyleSheet(f"background: {PRIMARY}; font-family: Roboto;")
         self._build()
 
     def _build(self):
@@ -26,12 +26,12 @@ class LoginView(QWidget):
         root.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         card = QFrame()
-        card.setFixedWidth(340)
+        card.setFixedWidth(360)
         card.setStyleSheet(f"""
             QFrame {{
                 background: {SECONDARY};
-                border: 1px solid {BORDER};
-                border-radius: 14px;
+                border: 1.5px solid {BORDER};
+                border-radius: 16px;
             }}
         """)
         cl = QVBoxLayout(card)
@@ -41,12 +41,12 @@ class LoginView(QWidget):
         # Logo
         logo = QLabel("EduStu")
         logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        logo.setFont(QFont("Segoe UI", 26, QFont.Weight.Bold))
-        logo.setStyleSheet(f"color: {HIGHLIGHT}; border: none;")
+        logo.setFont(QFont("Roboto", 28, QFont.Weight.Bold))
+        logo.setStyleSheet(f"color: {HIGHLIGHT}; border: none; letter-spacing: 2px;")
 
         sub = QLabel("Hệ thống quản lý sinh viên")
         sub.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        sub.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 12px; border: none;")
+        sub.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 14px; font-family: Roboto; border: none;")
 
         divider = QFrame()
         divider.setFrameShape(QFrame.Shape.HLine)
@@ -54,7 +54,7 @@ class LoginView(QWidget):
 
         # Username
         lbl_u = QLabel("Tên đăng nhập")
-        lbl_u.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 11px; font-weight: 600; border: none; margin-bottom: 4px;")
+        lbl_u.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 13px; font-weight: 600; font-family: Roboto; border: none; margin-bottom: 4px;")
         self.inp_user = self._inp("Nhập username...")
 
         sp1 = QLabel()
@@ -63,7 +63,7 @@ class LoginView(QWidget):
 
         # Password
         lbl_p = QLabel("Mật khẩu")
-        lbl_p.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 11px; font-weight: 600; border: none; margin-bottom: 4px;")
+        lbl_p.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 13px; font-weight: 600; font-family: Roboto; border: none; margin-bottom: 4px;")
         self.inp_pass = self._inp("••••••••", password=True)
         self.inp_pass.returnPressed.connect(self._login)
 
@@ -80,12 +80,13 @@ class LoginView(QWidget):
                 background: {HIGHLIGHT};
                 color: white;
                 border: none;
-                border-radius: 8px;
-                font-size: 14px;
+                border-radius: 10px;
+                font-size: 16px;
                 font-weight: 700;
+                font-family: Roboto;
             }}
-            QPushButton:hover   {{ background: #c73050; }}
-            QPushButton:pressed {{ background: #a02040; }}
+            QPushButton:hover   {{ background: #1D4ED8; }}
+            QPushButton:pressed {{ background: #1E40AF; }}
             QPushButton:disabled {{ background: {BORDER}; color: {TEXT_MUTED}; }}
         """)
         self.btn.clicked.connect(self._login)
@@ -93,7 +94,7 @@ class LoginView(QWidget):
         # Error label
         self.lbl_err = QLabel("")
         self.lbl_err.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.lbl_err.setStyleSheet(f"color: {DANGER}; font-size: 12px; border: none;")
+        self.lbl_err.setStyleSheet(f"color: {DANGER}; font-size: 13px; font-family: Roboto; border: none;")
         self.lbl_err.setWordWrap(True)
         self.lbl_err.hide()
 
@@ -103,7 +104,7 @@ class LoginView(QWidget):
 
         footer = QLabel("Đại học Công Nghệ Đông Á · 2024–2025")
         footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        footer.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 11px;")
+        footer.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 13px; font-family: Roboto;")
 
         root.addWidget(card)
         root.addSpacing(20)
@@ -117,14 +118,15 @@ class LoginView(QWidget):
             i.setEchoMode(QLineEdit.EchoMode.Password)
         i.setStyleSheet(f"""
             QLineEdit {{
-                background: {PRIMARY};
+                background: #F8FAFC;
                 color: {TEXT_LIGHT};
-                border: 1px solid {BORDER};
-                border-radius: 7px;
-                padding: 0 12px;
-                font-size: 13px;
+                border: 1.5px solid {BORDER};
+                border-radius: 9px;
+                padding: 0 14px;
+                font-size: 14px;
+                font-family: Roboto;
             }}
-            QLineEdit:focus {{ border-color: {HIGHLIGHT}; }}
+            QLineEdit:focus {{ border-color: {HIGHLIGHT}; background: #EFF6FF; }}
         """)
         return i
 
