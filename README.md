@@ -22,39 +22,17 @@ EduStu la ung dung desktop quan ly sinh vien viet bang `PyQt6`, to chuc theo huo
 
 ```text
 EduStu/
-|-- Frontend/
-|   |-- main.py
-|   |-- controllers/
-|   |   |-- auth.py
-|   |   |-- base.py
-|   |   |-- course.py
-|   |   |-- grade.py
-|   |   |-- report.py
-|   |   |-- student.py
-|   |   `-- tuition.py
-|   |-- models/
-|   |   |-- course.py
-|   |   |-- grade.py
-|   |   |-- student.py
-|   |   |-- transcript.py
-|   |   |-- tuition.py
-|   |   `-- user.py
-|   |-- utils/
-|   |   |-- config.py
-|   |   |-- helpers.py
-|   |   `-- session.py
-|   `-- views/
-|       |-- base_view.py
-|       |-- course_view.py
-|       |-- dashboard_view.py
-|       |-- grade_view.py
-|       |-- login_view.py
-|       |-- main_window.py
-|       |-- report_view.py
-|       |-- student_view.py
-|       `-- tuition_view.py
-|-- requirements.txt
-`-- README.md
+├── Backend/         # REST API (FastAPI)
+│   ├── models/      # ORM: User, Student, Course, Grade, Enrollment, Tuition
+│   ├── routers/     # Endpoints: auth, students, courses, grades, tuition, reports
+│   ├── schemas/     # Pydantic validation
+│   └── services/    # Business logic
+│
+└── Frontend/        # Desktop app (PyQt6 - MVC pattern)
+    ├── controllers/ # Gọi API + xử lý logic
+    ├── views/       # UI screens (login, dashboard, student, grade...)
+    ├── models/      # Data classes
+    └── utils/       # Config, session, helpers
 ```
 
 ## Kien truc
@@ -129,7 +107,6 @@ Neu backend cua ban chay o cong hoac host khac, sua gia tri nay truoc khi mo app
 
 ## Ghi chu thuc te
 
-- Repo hien tai la frontend, khong co ma nguon backend.
 - Neu backend khong chay hoac khong dung contract API, cac man hinh se bao loi ket noi/du lieu.
 - File `requirements.txt` hien tai chi gom dependency toi thieu cho frontend:
 
@@ -139,8 +116,6 @@ requests>=2.31.0
 ```
 
 ## Huong phat trien tiep
-
-- Bo sung backend FastAPI hoac dong bo lai contract API
 - Them xu ly fallback/offline neu can
 - Bo sung test cho controller/model
 - Chuan hoa encoding tieng Viet trong source
