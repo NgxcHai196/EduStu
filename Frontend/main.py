@@ -10,37 +10,36 @@ def main():
     app.setFont(QFont("Roboto", 11))
     app.setStyleSheet(f"""
         QToolTip {{
-            background: #FFFFFF;
-            color: #1E293B;
-            border: 1px solid #CBD5E1;
+            background: #1E3A8A;
+            color: #F1F5F9;
+            border: 1px solid #2563EB;
             border-radius: 6px;
             padding: 5px 10px;
             font-size: 13px;
             font-family: Roboto;
         }}
         QMessageBox {{
-            background: #F0F4F8;
-            color: #1E293B;
+            background: #0D1B3E;
+            color: #F1F5F9;
             font-family: Roboto;
         }}
         QMessageBox QLabel {{
-            color: #1E293B;
+            color: #F1F5F9;
             font-size: 14px;
             font-family: Roboto;
         }}
         QMessageBox QPushButton {{
-            background: #2563EB;
+            background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+                stop:0 #2563EB, stop:1 #7C3AED);
             color: #FFFFFF;
             border: none;
-            border-radius: 6px;
-            padding: 6px 18px;
+            border-radius: 8px;
+            padding: 6px 20px;
             min-width: 80px;
             font-size: 13px;
             font-family: Roboto;
         }}
-        QMessageBox QPushButton:hover {{
-            background: #1D4ED8;
-        }}
+        QMessageBox QPushButton:hover {{ background: #1D4ED8; }}
     """)
 
     main_win = None

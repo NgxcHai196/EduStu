@@ -94,7 +94,7 @@ class CourseForm(QDialog):
         root.setContentsMargins(24, 20, 24, 20)
         root.setSpacing(12)
         title = QLabel(self.windowTitle())
-        title.setFont(QFont("Segoe UI", 14, QFont.Weight.Bold))
+        title.setFont(QFont("Roboto", 14, QFont.Weight.Bold))
         root.addWidget(title)
         sep = QFrame(); sep.setFrameShape(QFrame.Shape.HLine); sep.setStyleSheet(f"color:{BORDER};")
         root.addWidget(sep)

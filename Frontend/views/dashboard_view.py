@@ -12,19 +12,27 @@ class StatCard(QFrame):
         super().__init__()
         self.setStyleSheet(f"""
             QFrame {{
-                background: {SECONDARY};
-                border: 1px solid {BORDER};
-                border-left: 4px solid {color};
-                border-radius: 10px;
+                background: #FFFFFF;
+                border: none;
+                border-top: 4px solid {color};
+                border-radius: 16px;
             }}
         """)
+        from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+        from PyQt6.QtGui import QColor as _C
+        sh = QGraphicsDropShadowEffect(self)
+        sh.setBlurRadius(24); sh.setOffset(0, 5)
+        sh.setColor(_C(0, 0, 0, 55))
+        self.setGraphicsEffect(sh)
+
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 14, 16, 14)
+        layout.setContentsMargins(22, 18, 22, 18)
+        layout.setSpacing(4)
         lbl = QLabel(label)
-        lbl.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 12px; border: none;")
+        lbl.setStyleSheet("color:#64748B;font-size:13px;font-family:Roboto;border:none;")
         val = QLabel(value)
-        val.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
-        val.setStyleSheet(f"color: {color}; border: none;")
+        val.setFont(QFont("Roboto", 30, QFont.Weight.Bold))
+        val.setStyleSheet(f"color:{color};border:none;")
         layout.addWidget(lbl)
         layout.addWidget(val)
         self._val = val
@@ -58,17 +66,24 @@ class DashboardView(BaseView):
         self._alert_frame = QFrame()
         self._alert_frame.setStyleSheet(f"""
             QFrame {{
-                background: {SECONDARY};
-                border: 1px solid {BORDER};
-                border-radius: 10px;
+                background: #FFFFFF;
+                border: none;
+                border-top: 4px solid {DANGER};
+                border-radius: 16px;
             }}
         """)
+        from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+        from PyQt6.QtGui import QColor as _QColor
+        sh2 = QGraphicsDropShadowEffect(self._alert_frame)
+        sh2.setBlurRadius(18); sh2.setOffset(0, 3)
+        sh2.setColor(_QColor(0, 0, 0, 25))
+        self._alert_frame.setGraphicsEffect(sh2)
         al = QVBoxLayout(self._alert_frame)
-        al.setContentsMargins(16, 14, 16, 14)
+        al.setContentsMargins(20, 16, 20, 16)
         al.setSpacing(8)
         title = QLabel("Cảnh báo gần đây")
-        title.setFont(QFont("Segoe UI", 13, QFont.Weight.Bold))
-        title.setStyleSheet(f"color: {TEXT_LIGHT}; border: none;")
+        title.setFont(QFont("Roboto", 14, QFont.Weight.Bold))
+        title.setStyleSheet("color:#0F172A;border:none;")
         al.addWidget(title)
         self._alert_layout = QVBoxLayout()
         self._alert_layout.setSpacing(6)
@@ -97,23 +112,23 @@ class DashboardView(BaseView):
         alerts = data.get("alerts", [])
         if not alerts:
             lbl = QLabel("Không có cảnh báo nào.")
-            lbl.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 12px; border: none;")
+            lbl.setStyleSheet("color:#94A3B8;font-size:13px;font-family:Roboto;border:none;")
             self._alert_layout.addWidget(lbl)
         for a in alerts[:6]:
             row = QFrame()
             row.setStyleSheet(f"""
                 QFrame {{
-                    background: rgba(233,69,96,0.1);
-                    border-radius: 6px;
-                    border: 1px solid rgba(233,69,96,0.3);
+                    background: #FEF2F2;
+                    border-radius: 10px;
+                    border: 1px solid #FECACA;
                 }}
             """)
             rl = QHBoxLayout(row)
-            rl.setContentsMargins(10, 6, 10, 6)
+            rl.setContentsMargins(12, 8, 12, 8)
             dot = QLabel("●")
-            dot.setStyleSheet(f"color: {DANGER}; font-size: 8px; border: none;")
+            dot.setStyleSheet(f"color:{DANGER};font-size:9px;border:none;")
             lbl = QLabel(f"<b>{a.get('ho_ten','')}</b> — {a.get('mo_ta','')}")
-            lbl.setStyleSheet(f"color: {TEXT_LIGHT}; font-size: 12px; border: none;")
+            lbl.setStyleSheet(f"color:#1E293B;font-size:13px;font-family:Roboto;border:none;")
             rl.addWidget(dot)
             rl.addWidget(lbl)
             self._alert_layout.addWidget(row)

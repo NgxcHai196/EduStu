@@ -29,8 +29,8 @@ class ReportView(BaseView):
     def build_ui(self):
         # Export cards
         exp_lbl = QLabel("Xuất file báo cáo")
-        exp_lbl.setFont(QFont("Segoe UI", 13, QFont.Weight.Bold))
-        exp_lbl.setStyleSheet(f"color: {TEXT_LIGHT};")
+        exp_lbl.setFont(QFont("Roboto", 15, QFont.Weight.Bold))
+        exp_lbl.setStyleSheet(f"color:{TEXT_LIGHT};font-family:Roboto;background:transparent;")
         self._root.addWidget(exp_lbl)
 
         exp_row = QHBoxLayout(); exp_row.setSpacing(12)
@@ -40,8 +40,8 @@ class ReportView(BaseView):
 
         # Statistics table
         stat_lbl = QLabel("Thống kê theo khoa")
-        stat_lbl.setFont(QFont("Segoe UI", 13, QFont.Weight.Bold))
-        stat_lbl.setStyleSheet(f"color: {TEXT_LIGHT};")
+        stat_lbl.setFont(QFont("Roboto", 15, QFont.Weight.Bold))
+        stat_lbl.setStyleSheet(f"color:{TEXT_LIGHT};font-family:Roboto;background:transparent;")
         self._root.addWidget(stat_lbl)
 
         self.table = self.make_table(COLS_TK)
@@ -68,36 +68,40 @@ class ReportView(BaseView):
         card = QFrame()
         card.setStyleSheet(f"""
             QFrame {{
-                background: {SECONDARY};
-                border: 1px solid {BORDER};
-                border-top: 3px solid {clr};
-                border-radius: 10px;
+                background: #FFFFFF;
+                border: none;
+                border-top: 4px solid {clr};
+                border-radius: 16px;
             }}
         """)
+        from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+        from PyQt6.QtGui import QColor as _C
+        sh = QGraphicsDropShadowEffect(card)
+        sh.setBlurRadius(16); sh.setOffset(0, 3); sh.setColor(_C(0,0,0,22))
+        card.setGraphicsEffect(sh)
+
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(16, 14, 16, 14)
+        layout.setContentsMargins(20, 16, 20, 16)
         layout.setSpacing(6)
 
         lbl_t = QLabel(title)
-        lbl_t.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
-        lbl_t.setStyleSheet(f"color: {TEXT_LIGHT}; border: none;")
+        lbl_t.setFont(QFont("Roboto", 14, QFont.Weight.Bold))
+        lbl_t.setStyleSheet("color:#0F172A;border:none;")
 
         lbl_d = QLabel(desc)
-        lbl_d.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 11px; border: none;")
+        lbl_d.setStyleSheet("color:#64748B;font-size:13px;font-family:Roboto;border:none;")
 
         btn = QPushButton("Xuất Excel")
-        btn.setFixedHeight(32)
+        btn.setFixedHeight(36)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.setStyleSheet(f"""
             QPushButton {{
                 background: {clr};
-                color: white;
-                border: none;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 600;
+                color: white; border: none;
+                border-radius: 9px;
+                font-size: 13px; font-weight: 600; font-family: Roboto;
             }}
-            QPushButton:hover {{ opacity: 0.85; }}
+            QPushButton:hover {{ background: {clr}CC; }}
         """)
         btn.clicked.connect(lambda: self._do_export(loai))
 

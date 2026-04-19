@@ -7,17 +7,14 @@ import sys
 from unittest.mock import MagicMock
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 1. Session gia lap (user da dang nhap)
+# 1. Session gia lap
 # ─────────────────────────────────────────────────────────────────────────────
 from models.user import User
 from utils.session import Session
 
 _fake_user = User(
-    id=1,
-    username="admin",
-    ho_ten="Nguyen Van Admin",
-    role="admin",
-    email="admin@edustu.vn",
+    id=1, username="admin", ho_ten="Nguyen Van Admin",
+    role="admin", email="admin@edustu.vn",
 )
 Session.set(token="fake-token", user=_fake_user)
 
@@ -83,13 +80,11 @@ FAKE_GRADES = [
           so_tin_chi=2, diem_gk=8.5, diem_ck=9.0, hoc_ky="HK1-2024-2025"),
 ]
 FAKE_GRADE_DATA = {
-    "diem_list": [g.to_dict() | {"ten_hp": g.ten_hp, "so_tin_chi": g.so_tin_chi, "id": g.id} for g in FAKE_GRADES],
-    "gpa_tich_luy": 2.85,
-    "gpa_ky": 2.63,
-    "tin_chi_dat": 8,
-    "tin_chi_dang_ky": 12,
-    "xep_loai": "Kha",
-    "canh_bao": "",
+    "diem_list": [g.to_dict() | {"ten_hp": g.ten_hp, "so_tin_chi": g.so_tin_chi, "id": g.id}
+                  for g in FAKE_GRADES],
+    "gpa_tich_luy": 2.85, "gpa_ky": 2.63,
+    "tin_chi_dat": 8, "tin_chi_dang_ky": 12,
+    "xep_loai": "Kha", "canh_bao": "",
 }
 
 from models.tuition import Tuition
@@ -107,10 +102,7 @@ FAKE_TUITIONS = [
 ]
 
 FAKE_DASHBOARD = {
-    "tong_sv": 342,
-    "dang_hoc": 301,
-    "canh_bao_hv": 18,
-    "no_hoc_phi": 47,
+    "tong_sv": 342, "dang_hoc": 301, "canh_bao_hv": 18, "no_hoc_phi": 47,
     "alerts": [
         {"ho_ten": "Le Van Cuong",   "mo_ta": "GPA 1.45 - canh bao hoc vu lan 2"},
         {"ho_ten": "Pham Thi Dung",  "mo_ta": "Chua nop hoc phi HK1-2024-2025"},
@@ -131,108 +123,40 @@ FAKE_STATS = [
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 3. Tao mock controllers (khong goi HTTP)
+# 3. Mock controllers
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _student_ctrl():
     ctrl = MagicMock()
     svc  = MagicMock()
-    svc.get_list.return_value       = {"items": FAKE_STUDENTS, "total": len(FAKE_STUDENTS)}
-    svc.get_by_mssv.return_value    = FAKE_STUDENTS[0]
+    svc.get_list.return_value    = {"items": FAKE_STUDENTS, "total": len(FAKE_STUDENTS)}
+    svc.get_by_mssv.return_value = FAKE_STUDENTS[0]
     ctrl._svc = svc
-
     def load_list(search="", *args, on_success=None, on_error=None, **kw):
-        if on_success:
-            on_success(svc.get_list.return_value)
+        if on_success: on_success(svc.get_list.return_value)
     ctrl.load_list.side_effect = load_list
-
     def load_one(mssv, on_success=None, on_error=None):
         from models.student import Student
         raw = next((s for s in FAKE_STUDENTS if s["mssv"] == mssv), FAKE_STUDENTS[0])
         sv  = Student(mssv=raw["mssv"], ho_ten=raw["ho_ten"], lop=raw["lop"],
                       khoa=raw["khoa"], trang_thai=raw["trang_thai"])
-        if on_success:
-            on_success(sv)
+        if on_success: on_success(sv)
     ctrl.load_one.side_effect = load_one
     return ctrl
-
 
 def _course_ctrl():
     ctrl = MagicMock()
     svc  = MagicMock()
     svc.get_list.return_value = FAKE_COURSES
     ctrl._svc = svc
-
     def load_list(search="", *args, on_success=None, on_error=None, **kw):
-        if on_success:
-            on_success(FAKE_COURSES)
+        if on_success: on_success(FAKE_COURSES)
     ctrl.load_list.side_effect = load_list
     return ctrl
 
-
-def _grade_ctrl():
-    ctrl = MagicMock()
-    svc  = MagicMock()
-    svc.get_transcript.return_value = FAKE_GRADE_DATA
-    ctrl._svc = svc
-    return ctrl
-
-
-def _tuition_ctrl():
-    ctrl = MagicMock()
-    svc  = MagicMock()
-    svc.get_list.return_value      = FAKE_TUITIONS
-    svc.get_debt_list.return_value = FAKE_TUITIONS
-    ctrl._svc = svc
-
-    def load_list(search="", *args, on_success=None, on_error=None, **kw):
-        if on_success:
-            on_success(FAKE_TUITIONS)
-    ctrl.load_list.side_effect = load_list
-
-    def load_debt_list(on_success=None, on_error=None):
-        if on_success:
-            on_success(FAKE_TUITIONS)
-    ctrl.load_debt_list.side_effect = load_debt_list
-    return ctrl
-
-
-def _report_ctrl():
-    ctrl = MagicMock()
-    svc  = MagicMock()
-    svc.get_dashboard.return_value  = FAKE_DASHBOARD
-    svc.get_statistics.return_value = FAKE_STATS
-    ctrl._svc = svc
-
-    def load_statistics(on_success=None, on_error=None):
-        if on_success:
-            on_success(FAKE_STATS)
-    ctrl.load_statistics.side_effect = load_statistics
-    return ctrl
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# 4. Monkey-patch controllers truoc khi import views
-# ─────────────────────────────────────────────────────────────────────────────
-import controllers.student as _cs
-import controllers.course  as _cc
-import controllers.grade   as _cg
-import controllers.tuition as _ct
-import controllers.report  as _cr
-
-_cs.StudentController = lambda: _student_ctrl()
-_cc.CourseController  = lambda: _course_ctrl()
-_cg.GradeController   = lambda: _grade_ctrl()
-_ct.TuitionController = lambda: _tuition_ctrl()
-_cr.ReportController  = lambda: _report_ctrl()
-
-# Mock GPA chi tiết trong GradeController
 _FAKE_GPA = {
-    "gpa_tich_luy": 2.85,
-    "tin_chi_dat":  8,
-    "tin_chi_dang_ky": 12,
-    "xep_loai":     "Kha",
-    "canh_bao":     "",
+    "gpa_tich_luy": 2.85, "tin_chi_dat": 8, "tin_chi_dang_ky": 12,
+    "xep_loai": "Kha", "canh_bao": "",
     "by_ky": [
         {"hoc_ky": "HK1-2023-2024", "gpa": 2.70, "tin_chi_dat": 10, "xep_loai": "Trung binh"},
         {"hoc_ky": "HK2-2023-2024", "gpa": 3.10, "tin_chi_dat": 12, "xep_loai": "Kha"},
@@ -244,21 +168,57 @@ def _grade_ctrl():
     ctrl = MagicMock()
     svc  = MagicMock()
     svc.get_transcript.return_value = FAKE_GRADE_DATA
-    svc.get_gpa.return_value = _FAKE_GPA
+    svc.get_gpa.return_value        = _FAKE_GPA
     ctrl._svc = svc
     def load_gpa(mssv, on_success=None, on_error=None):
-        if on_success:
-            on_success(_FAKE_GPA)
+        if on_success: on_success(_FAKE_GPA)
     ctrl.load_gpa.side_effect = load_gpa
     return ctrl
 
-# AuthController mock don gian (de LoginView khong crash)
-import controllers.auth as _ca
-_auth_mock = MagicMock()
-_ca.AuthController = lambda: _auth_mock
+def _tuition_ctrl():
+    ctrl = MagicMock()
+    svc  = MagicMock()
+    svc.get_list.return_value      = FAKE_TUITIONS
+    svc.get_debt_list.return_value = FAKE_TUITIONS
+    ctrl._svc = svc
+    def load_list(search="", *args, on_success=None, on_error=None, **kw):
+        if on_success: on_success(FAKE_TUITIONS)
+    ctrl.load_list.side_effect = load_list
+    def load_debt_list(on_success=None, on_error=None):
+        if on_success: on_success(FAKE_TUITIONS)
+    ctrl.load_debt_list.side_effect = load_debt_list
+    return ctrl
+
+def _report_ctrl():
+    ctrl = MagicMock()
+    svc  = MagicMock()
+    svc.get_dashboard.return_value  = FAKE_DASHBOARD
+    svc.get_statistics.return_value = FAKE_STATS
+    ctrl._svc = svc
+    def load_statistics(on_success=None, on_error=None):
+        if on_success: on_success(FAKE_STATS)
+    ctrl.load_statistics.side_effect = load_statistics
+    return ctrl
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 5. Import views (sau khi da patch)
+# 4. Monkey-patch controllers
+# ─────────────────────────────────────────────────────────────────────────────
+import controllers.student as _cs
+import controllers.course  as _cc
+import controllers.grade   as _cg
+import controllers.tuition as _ct
+import controllers.report  as _cr
+import controllers.auth    as _ca
+
+_cs.StudentController  = lambda: _student_ctrl()
+_cc.CourseController   = lambda: _course_ctrl()
+_cg.GradeController    = lambda: _grade_ctrl()
+_ct.TuitionController  = lambda: _tuition_ctrl()
+_cr.ReportController   = lambda: _report_ctrl()
+_ca.AuthController     = lambda: MagicMock()
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. Preview Window
 # ─────────────────────────────────────────────────────────────────────────────
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QHBoxLayout,
@@ -267,30 +227,29 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
-from utils.config import PRIMARY, SECONDARY, HIGHLIGHT, TEXT_LIGHT, TEXT_MUTED, BORDER
+from utils.config import PRIMARY, SECONDARY, ACCENT, TEXT_LIGHT, TEXT_MUTED, BORDER
 
 NAV_SCREENS = [
-    ("login",     "  Login (man hinh dang nhap)"),
-    ("dashboard", "  Dashboard"),
-    ("sinhvien",  "  Sinh vien"),
-    ("hocphan",   "  Hoc phan"),
-    ("diem",      "  Diem so"),
-    ("hocphi",    "  Hoc phi"),
-    ("baocao",    "  Bao cao"),
+    ("login",     "🔐  Trang đăng nhập"),
+    ("dashboard", "📊  Dashboard"),
+    ("sinhvien",  "🎓  Sinh viên"),
+    ("hocphan",   "📚  Học phần"),
+    ("diem",      "📝  Điểm số"),
+    ("hocphi",    "💰  Học phí"),
+    ("baocao",    "📋  Báo cáo"),
 ]
 
 
 class PreviewWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("EduStu — Preview UI (khong can backend)")
-        self.setMinimumSize(1280, 750)
-        self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT};")
+        self.setWindowTitle("EduStu — Preview UI")
+        self.setMinimumSize(1300, 760)
+        self.setStyleSheet(f"background:{PRIMARY}; color:{TEXT_LIGHT}; font-family:Roboto;")
         self._build()
         self._load_screens()
         self._switch("dashboard")
 
-    # ── Build layout ──────────────────────────────────────────────────────────
     def _build(self):
         central = QWidget()
         self.setCentralWidget(central)
@@ -298,16 +257,19 @@ class PreviewWindow(QMainWindow):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
         root.addWidget(self._make_sidebar())
-
         self.stack = QStackedWidget()
-        self.stack.setStyleSheet(f"background: {PRIMARY};")
+        self.stack.setStyleSheet(f"background:{PRIMARY}; font-family:Roboto;")
         root.addWidget(self.stack)
 
     def _make_sidebar(self) -> QFrame:
         sidebar = QFrame()
         sidebar.setFixedWidth(220)
         sidebar.setStyleSheet(f"""
-            QFrame {{ background: {SECONDARY}; border-right: 1px solid {BORDER}; }}
+            QFrame {{
+                background: {SECONDARY};
+                border-right: 1.5px solid {BORDER};
+                font-family: Roboto;
+            }}
         """)
         lay = QVBoxLayout(sidebar)
         lay.setContentsMargins(0, 0, 0, 0)
@@ -315,47 +277,49 @@ class PreviewWindow(QMainWindow):
 
         # Brand header
         brand = QFrame()
-        brand.setFixedHeight(64)
-        brand.setStyleSheet(f"border-bottom: 1px solid {BORDER};")
+        brand.setFixedHeight(68)
+        brand.setStyleSheet(f"border-bottom: 1.5px solid {BORDER};")
         bl = QVBoxLayout(brand)
-        bl.setContentsMargins(16, 8, 16, 8)
+        bl.setContentsMargins(18, 10, 18, 10)
         bl.setSpacing(2)
-        lbl1 = QLabel("EduStu — Preview")
-        lbl1.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
-        lbl1.setStyleSheet(f"color: {HIGHLIGHT}; border: none;")
-        lbl2 = QLabel("Chon man hinh de xem")
-        lbl2.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 10px; border: none;")
+        lbl1 = QLabel("EduStu")
+        lbl1.setFont(QFont("Roboto", 16, QFont.Weight.Bold))
+        lbl1.setStyleSheet("color:#93C5FD; border:none; letter-spacing:2px;")
+        lbl2 = QLabel("Chọn màn hình để xem")
+        lbl2.setStyleSheet(f"color:{TEXT_MUTED}; font-size:12px; font-family:Roboto; border:none;")
         bl.addWidget(lbl1)
         bl.addWidget(lbl2)
         lay.addWidget(brand)
-        lay.addSpacing(6)
+        lay.addSpacing(8)
 
         # Nav buttons
         self._nav_btns: dict[str, QPushButton] = {}
         for key, label in NAV_SCREENS:
             btn = QPushButton(label)
-            btn.setFixedHeight(42)
+            btn.setFixedHeight(46)
             btn.setCursor(Qt.CursorShape.PointingHandCursor)
             btn.setCheckable(True)
             btn.setStyleSheet(f"""
                 QPushButton {{
                     text-align: left;
-                    padding-left: 14px;
+                    padding-left: 20px;
                     border: none;
                     border-left: 3px solid transparent;
                     background: transparent;
-                    font-size: 12px;
+                    font-size: 14px;
+                    font-family: Roboto;
                     color: {TEXT_MUTED};
                 }}
                 QPushButton:hover {{
-                    background: rgba(255,255,255,0.05);
-                    color: {TEXT_LIGHT};
+                    background: rgba(37,99,235,0.12);
+                    color: #93C5FD;
+                    border-left: 3px solid rgba(37,99,235,0.5);
                 }}
                 QPushButton:checked {{
-                    background: rgba(233,69,96,0.12);
-                    color: {HIGHLIGHT};
-                    border-left: 3px solid {HIGHLIGHT};
-                    font-weight: 600;
+                    background: rgba(37,99,235,0.2);
+                    color: #BFDBFE;
+                    border-left: 3px solid {ACCENT};
+                    font-weight: 700;
                 }}
             """)
             btn.clicked.connect(lambda _, k=key: self._switch(k))
@@ -364,15 +328,18 @@ class PreviewWindow(QMainWindow):
 
         lay.addStretch()
 
-        # Footer hint
-        hint = QLabel("Khong can backend / API")
+        # Footer
+        hint = QLabel("Preview mode · Không cần backend")
         hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        hint.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 10px; padding: 8px;")
+        hint.setStyleSheet(
+            f"color:{TEXT_MUTED}; font-size:11px; font-family:Roboto;"
+            "padding:10px; border-top:1px solid #E2E8F0;"
+        )
         lay.addWidget(hint)
         return sidebar
 
-    # ── Load tat ca man hinh ─────────────────────────────────────────────────
     def _load_screens(self):
+        # LoginView chạy trong stack (FramelessWindowHint không ảnh hưởng khi là child)
         from views.login_view     import LoginView
         from views.dashboard_view import DashboardView
         from views.student_view   import StudentView
@@ -381,8 +348,14 @@ class PreviewWindow(QMainWindow):
         from views.tuition_view   import TuitionView
         from views.report_view    import ReportView
 
+        login_widget = LoginView(on_success=lambda user: None)
+        # Tắt frameless khi chạy trong preview stack
+        login_widget.setWindowFlag(Qt.WindowType.FramelessWindowHint, False)
+        login_widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, False)
+        login_widget.setStyleSheet("")
+
         self._screens: dict[str, QWidget] = {
-            "login":     LoginView(on_success=lambda user: None),
+            "login":     login_widget,
             "dashboard": DashboardView(),
             "sinhvien":  StudentView(),
             "hocphan":   CourseView(),
@@ -396,7 +369,6 @@ class PreviewWindow(QMainWindow):
         self._preload_grade_view()
 
     def _preload_grade_view(self):
-        """Hien thi bang diem mau ngay khi mo man hinh Diem so."""
         from views.grade_view import GradeView
         from models.student import Student
         gv: GradeView = self._screens["diem"]
@@ -405,11 +377,13 @@ class PreviewWindow(QMainWindow):
                           trang_thai="Dang hoc")
         gv._student = fake_sv
         gv.inp_mssv.setText("SV001")
-        gv.av.setText(fake_sv.avatar_text)
-        gv.p_name.setText(fake_sv.ho_ten)
-        gv.p_lop.setText(f"{fake_sv.lop} · {fake_sv.khoa}")
+        try:
+            gv.av.setText(fake_sv.avatar_text)
+            gv.p_name.setText(fake_sv.ho_ten)
+            gv.p_lop.setText(f"{fake_sv.lop} · {fake_sv.khoa}")
+        except Exception:
+            pass
 
-    # ── Chuyen man hinh ──────────────────────────────────────────────────────
     def _switch(self, key: str):
         for k, btn in self._nav_btns.items():
             btn.setChecked(k == key)
@@ -422,19 +396,31 @@ class PreviewWindow(QMainWindow):
                 view.refresh()
             except Exception as e:
                 print(f"[preview] refresh '{key}' error: {e}")
-        elif key == "diem":
-            try:
-                view._reload()
-            except Exception as e:
-                print(f"[preview] reload 'diem' error: {e}")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 6. Chay
+# 6. Run
 # ─────────────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setFont(QFont("Segoe UI", 10))
+    app.setFont(QFont("Roboto", 11))
+    app.setStyleSheet("""
+        QToolTip {
+            background: #FFFFFF; color: #1E293B;
+            border: 1px solid #CBD5E1; border-radius: 6px;
+            padding: 5px 10px; font-size: 13px; font-family: Roboto;
+        }
+        QMessageBox {
+            background: #F0F4F8; color: #1E293B; font-family: Roboto;
+        }
+        QMessageBox QLabel { color: #1E293B; font-size: 14px; font-family: Roboto; }
+        QMessageBox QPushButton {
+            background: #2563EB; color: white; border: none;
+            border-radius: 6px; padding: 6px 18px; min-width: 80px;
+            font-size: 13px; font-family: Roboto;
+        }
+        QMessageBox QPushButton:hover { background: #1D4ED8; }
+    """)
     win = PreviewWindow()
     win.show()
     sys.exit(app.exec())

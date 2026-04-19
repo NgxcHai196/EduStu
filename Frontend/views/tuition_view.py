@@ -35,10 +35,14 @@ class TuitionView(BaseView):
         self._stat_vals: list[QLabel] = []
         for lbl_txt, clr in zip(labels, colors):
             card = QFrame()
-            card.setStyleSheet(f"QFrame{{background:{SECONDARY};border:1px solid {BORDER};border-left:4px solid {clr};border-radius:8px;}}")
-            cl = QVBoxLayout(card); cl.setContentsMargins(14,10,14,10); cl.setSpacing(2)
-            lbl = QLabel(lbl_txt); lbl.setStyleSheet(f"color:{TEXT_MUTED};font-size:11px;border:none;")
-            val = QLabel("—"); val.setFont(QFont("Segoe UI",16,QFont.Weight.Bold)); val.setStyleSheet(f"color:{clr};border:none;")
+            card.setStyleSheet(f"QFrame{{background:#FFFFFF;border:none;border-top:4px solid {clr};border-radius:16px;}}")
+            from PyQt6.QtWidgets import QGraphicsDropShadowEffect as _Sh
+            from PyQt6.QtGui import QColor as _C
+            sh=_Sh(card); sh.setBlurRadius(16); sh.setOffset(0,3); sh.setColor(_C(0,0,0,22))
+            card.setGraphicsEffect(sh)
+            cl = QVBoxLayout(card); cl.setContentsMargins(20,14,20,14); cl.setSpacing(4)
+            lbl = QLabel(lbl_txt); lbl.setStyleSheet("color:#64748B;font-size:13px;font-family:Roboto;border:none;")
+            val = QLabel("—"); val.setFont(QFont("Roboto",28,QFont.Weight.Bold)); val.setStyleSheet(f"color:{clr};border:none;")
             cl.addWidget(lbl); cl.addWidget(val)
             self._stat_vals.append(val)
             stat_row.addWidget(card)
@@ -113,7 +117,7 @@ class PaymentForm(QDialog):
         root = QVBoxLayout(self)
         root.setContentsMargins(24,20,24,20); root.setSpacing(12)
         title = QLabel("Ghi nhận thanh toán")
-        title.setFont(QFont("Segoe UI",14,QFont.Weight.Bold)); root.addWidget(title)
+        title.setFont(QFont("Roboto",14,QFont.Weight.Bold)); root.addWidget(title)
         sep = QFrame(); sep.setFrameShape(QFrame.Shape.HLine); sep.setStyleSheet(f"color:{BORDER};"); root.addWidget(sep)
 
         grid = QGridLayout(); grid.setSpacing(10)

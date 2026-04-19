@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, QTimer, QDate
 from PyQt6.QtGui import QFont
-from views.base_view import BaseView, QSS_INPUT
+from views.base_view import BaseView, QSS_INPUT, QSS_INPUT_LIGHT
 from controllers.student import StudentController
 from utils.config import (
     PRIMARY, SECONDARY, ACCENT, HIGHLIGHT, TEXT_LIGHT, TEXT_MUTED, BORDER,
@@ -67,7 +67,7 @@ class StudentView(BaseView):
         self._root.addWidget(self.table)
 
         self.lbl_count = QLabel("")
-        self.lbl_count.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 11px;")
+        self.lbl_count.setStyleSheet("color:#64748B;font-size:13px;font-family:Roboto;")
         self._root.addWidget(self.lbl_count)
 
     def refresh(self):
@@ -175,7 +175,7 @@ class StudentForm(QDialog):
         self._is_edit = bool(data)
         self.setWindowTitle("Sửa sinh viên" if self._is_edit else "Thêm sinh viên")
         self.setFixedSize(520, 660)
-        self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT};")
+        self.setStyleSheet("background:#FFFFFF; color:#1E293B; font-family:Roboto;")
         self._build()
         if data:
             self._fill(data)
@@ -186,13 +186,12 @@ class StudentForm(QDialog):
         root.setSpacing(14)
 
         title = QLabel(self.windowTitle())
-        title.setFont(QFont("Segoe UI", 15, QFont.Weight.Bold))
-        title.setStyleSheet(f"color: {TEXT_LIGHT};")
+        title.setFont(QFont("Roboto", 16, QFont.Weight.Bold))
+        title.setStyleSheet("color:#0F172A;")
         root.addWidget(title)
 
-        sep = QFrame()
-        sep.setFrameShape(QFrame.Shape.HLine)
-        sep.setStyleSheet(f"color: {BORDER};")
+        sep = QFrame(); sep.setFixedHeight(2)
+        sep.setStyleSheet("background:#E2E8F0; border:none;")
         root.addWidget(sep)
 
         grid = QGridLayout()
@@ -200,22 +199,22 @@ class StudentForm(QDialog):
 
         def lbl(t):
             l = QLabel(t)
-            l.setStyleSheet(f"color: {TEXT_MUTED}; font-size: 11px; font-weight: 600;")
-            l.setFixedWidth(120)
+            l.setStyleSheet("color:#475569;font-size:13px;font-weight:600;font-family:Roboto;")
+            l.setFixedWidth(130)
             return l
 
         def inp(ph=""):
             i = QLineEdit()
             i.setPlaceholderText(ph)
-            i.setFixedHeight(34)
-            i.setStyleSheet(QSS_INPUT)
+            i.setFixedHeight(36)
+            i.setStyleSheet(QSS_INPUT_LIGHT)
             return i
 
         def cmb(items):
             c = QComboBox()
             c.addItems(items)
-            c.setFixedHeight(34)
-            c.setStyleSheet(QSS_INPUT)
+            c.setFixedHeight(36)
+            c.setStyleSheet(QSS_INPUT_LIGHT)
             return c
 
         self.f_mssv    = inp("VD: SV001")
@@ -230,7 +229,7 @@ class StudentForm(QDialog):
         self.f_ns.setCalendarPopup(True)
         self.f_ns.setDate(QDate(2003, 1, 1))
         self.f_ns.setFixedHeight(34)
-        self.f_ns.setStyleSheet(QSS_INPUT)
+        self.f_ns.setStyleSheet(QSS_INPUT_LIGHT)
         self.f_gt   = cmb(GIOI_TINH)
         self.f_khoa = cmb(KHOA_LIST)
         self.f_tt   = cmb(TRANG_THAI_SV)
@@ -261,26 +260,27 @@ class StudentForm(QDialog):
         btn_cancel = QPushButton("Hủy")
         btn_cancel.setFixedHeight(34)
         btn_cancel.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn_cancel.setStyleSheet(f"""
-            QPushButton {{
-                background: transparent; color: {TEXT_MUTED};
-                border: 1px solid {BORDER}; border-radius: 6px;
-                font-size: 13px; padding: 0 18px;
-            }}
-            QPushButton:hover {{ color: {TEXT_LIGHT}; border-color: {TEXT_MUTED}; }}
+        btn_cancel.setStyleSheet("""
+            QPushButton {
+                background:#F8FAFC; color:#64748B;
+                border:1.5px solid #E2E8F0; border-radius:9px;
+                font-size:13px; font-family:Roboto; padding:0 18px;
+            }
+            QPushButton:hover { background:#F1F5F9; color:#1E293B; }
         """)
         btn_cancel.clicked.connect(self.reject)
         self.btn_save = QPushButton("Lưu")
-        self.btn_save.setFixedHeight(34)
+        self.btn_save.setFixedHeight(38)
         self.btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.btn_save.setStyleSheet(f"""
-            QPushButton {{
-                background: {HIGHLIGHT}; color: white;
-                border: none; border-radius: 6px;
-                font-size: 13px; font-weight: 700; padding: 0 24px;
-            }}
-            QPushButton:hover {{ background: #c73050; }}
-            QPushButton:disabled {{ background: {BORDER}; color: {TEXT_MUTED}; }}
+        self.btn_save.setStyleSheet("""
+            QPushButton {
+                background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+                    stop:0 #2563EB, stop:1 #7C3AED);
+                color:white; border:none; border-radius:9px;
+                font-size:13px; font-weight:700; font-family:Roboto; padding:0 24px;
+            }
+            QPushButton:hover { background:#1D4ED8; }
+            QPushButton:disabled { background:#CBD5E1; color:#94A3B8; }
         """)
         self.btn_save.clicked.connect(self._save)
         btn_row.addWidget(btn_cancel)
@@ -354,7 +354,7 @@ class StudentProfileDialog(QDialog):
         ho_ten = data.get("ho_ten", "Sinh viên")
         self.setWindowTitle(f"Hồ sơ sinh viên — {ho_ten}")
         self.setFixedSize(480, 560)
-        self.setStyleSheet(f"background:{PRIMARY};color:{TEXT_LIGHT};")
+        self.setStyleSheet("background:#FFFFFF; color:#1E293B; font-family:Roboto;")
         self._build(data)
 
     def _build(self, d: dict):
@@ -365,8 +365,7 @@ class StudentProfileDialog(QDialog):
         # ── Header với avatar ─────────────────────────────────────────────
         header = QFrame()
         header.setStyleSheet(
-            f"QFrame{{background:{SECONDARY};"
-            f"border-bottom:1px solid {BORDER};}}"
+            "QFrame{background:#F8FAFC; border-bottom:1.5px solid #E2E8F0;}"
         )
         header.setFixedHeight(130)
         hl = QHBoxLayout(header)
@@ -380,8 +379,8 @@ class StudentProfileDialog(QDialog):
         av.setFixedSize(70, 70)
         av.setAlignment(Qt.AlignmentFlag.AlignCenter)
         av.setStyleSheet(
-            f"background:{ACCENT};color:{TEXT_LIGHT};border-radius:35px;"
-            f"font-size:22px;font-weight:700;border:none;"
+            "background:#DBEAFE;color:#2563EB;border-radius:35px;"
+            "font-size:22px;font-weight:700;font-family:Roboto;border:none;"
         )
 
         # Tên + MSSV + badge trạng thái
@@ -389,11 +388,11 @@ class StudentProfileDialog(QDialog):
         info_col.setSpacing(4)
 
         name_lbl = QLabel(d.get("ho_ten", "—"))
-        name_lbl.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
-        name_lbl.setStyleSheet(f"color:{TEXT_LIGHT};border:none;")
+        name_lbl.setFont(QFont("Roboto", 16, QFont.Weight.Bold))
+        name_lbl.setStyleSheet("color:#0F172A;border:none;")
 
         mssv_lbl = QLabel(d.get("mssv", ""))
-        mssv_lbl.setStyleSheet(f"color:{TEXT_MUTED};font-size:12px;border:none;")
+        mssv_lbl.setStyleSheet("color:#64748B;font-size:13px;font-family:Roboto;border:none;")
 
         tt = d.get("trang_thai", "")
         tt_colors = {
@@ -418,7 +417,7 @@ class StudentProfileDialog(QDialog):
 
         # ── Body: danh sách thông tin ──────────────────────────────────────
         body = QFrame()
-        body.setStyleSheet(f"QFrame{{background:{PRIMARY};}}")
+        body.setStyleSheet("QFrame{background:#FFFFFF;}")
         bl = QVBoxLayout(body)
         bl.setContentsMargins(28, 20, 28, 20)
         bl.setSpacing(0)
@@ -470,22 +469,22 @@ class StudentProfileDialog(QDialog):
         # ── Footer: nút Đóng ──────────────────────────────────────────────
         footer = QFrame()
         footer.setStyleSheet(
-            f"QFrame{{background:{SECONDARY};"
-            f"border-top:1px solid {BORDER};}}"
+            "QFrame{background:#F8FAFC; border-top:1.5px solid #E2E8F0;}"
         )
-        footer.setFixedHeight(56)
+        footer.setFixedHeight(60)
         fl = QHBoxLayout(footer)
         fl.setContentsMargins(28, 0, 28, 0)
         fl.addStretch()
         btn_close = QPushButton("Đóng")
-        btn_close.setFixedHeight(34)
-        btn_close.setFixedWidth(100)
+        btn_close.setFixedHeight(36)
+        btn_close.setFixedWidth(110)
         btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn_close.setStyleSheet(
-            f"QPushButton{{background:transparent;color:{TEXT_MUTED};"
-            f"border:1px solid {BORDER};border-radius:6px;font-size:13px;}}"
-            f"QPushButton:hover{{color:{TEXT_LIGHT};}}"
-        )
+        btn_close.setStyleSheet("""
+            QPushButton{background:#F1F5F9;color:#64748B;
+            border:1.5px solid #E2E8F0;border-radius:9px;
+            font-size:13px;font-family:Roboto;}
+            QPushButton:hover{background:#E2E8F0;color:#1E293B;}
+        """)
         btn_close.clicked.connect(self.accept)
         fl.addWidget(btn_close)
         root.addWidget(footer)
@@ -494,8 +493,8 @@ class StudentProfileDialog(QDialog):
     def _section(self, layout: QVBoxLayout, title: str):
         lbl = QLabel(title.upper())
         lbl.setStyleSheet(
-            f"color:{ACCENT};font-size:10px;font-weight:700;"
-            f"letter-spacing:1px;border:none;margin-bottom:6px;"
+            "color:#2563EB;font-size:11px;font-weight:700;"
+            "font-family:Roboto;letter-spacing:1px;border:none;margin-bottom:6px;"
         )
         layout.addWidget(lbl)
 
@@ -505,11 +504,11 @@ class StudentProfileDialog(QDialog):
 
         lbl = QLabel(label)
         lbl.setFixedWidth(140)
-        lbl.setStyleSheet(f"color:{TEXT_MUTED};font-size:12px;border:none;")
+        lbl.setStyleSheet("color:#64748B;font-size:13px;font-family:Roboto;border:none;")
 
         val = QLabel(value)
         val.setStyleSheet(
-            f"color:{TEXT_LIGHT};font-size:13px;font-weight:500;border:none;"
+            "color:#1E293B;font-size:13px;font-weight:500;font-family:Roboto;border:none;"
         )
         val.setWordWrap(True)
 

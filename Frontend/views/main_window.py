@@ -24,7 +24,15 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("EduStu")
         self.setMinimumSize(1200, 700)
-        self.setStyleSheet(f"background: {PRIMARY}; color: {TEXT_LIGHT}; font-family: Roboto;")
+        self.setStyleSheet(f"""
+            QMainWindow {{
+                background: {PRIMARY};
+            }}
+            QWidget {{
+                color: {TEXT_LIGHT};
+                font-family: Roboto;
+            }}
+        """)
         self._build()
         self._load_views()
         self._nav_to("dashboard")
@@ -39,7 +47,7 @@ class MainWindow(QMainWindow):
         root.addWidget(self._make_sidebar())
 
         self.stack = QStackedWidget()
-        self.stack.setStyleSheet(f"background: {PRIMARY}; font-family: Roboto;")
+        self.stack.setStyleSheet("background: transparent; font-family: Roboto;")
         root.addWidget(self.stack)
 
     def _make_sidebar(self) -> QFrame:
@@ -48,7 +56,7 @@ class MainWindow(QMainWindow):
         sb.setStyleSheet(f"""
             QFrame {{
                 background: {SECONDARY};
-                border-right: 1.5px solid {BORDER};
+                border-right: 1px solid {BORDER};
                 font-family: Roboto;
             }}
         """)
@@ -64,7 +72,7 @@ class MainWindow(QMainWindow):
         bl.setContentsMargins(16, 0, 16, 0)
         lbl = QLabel("EduStu")
         lbl.setFont(QFont("Roboto", 18, QFont.Weight.Bold))
-        lbl.setStyleSheet(f"color: {HIGHLIGHT}; border: none; letter-spacing: 1px;")
+        lbl.setStyleSheet("color: #93C5FD; border: none; letter-spacing: 2px;")
         bl.addWidget(lbl)
         layout.addWidget(brand)
 
@@ -95,13 +103,13 @@ class MainWindow(QMainWindow):
         av.setFixedSize(38, 38)
         av.setAlignment(Qt.AlignmentFlag.AlignCenter)
         av.setStyleSheet(f"""
-            background: #DBEAFE;
-            color: {ACCENT};
+            background: rgba(37,99,235,0.25);
+            color: #93C5FD;
             border-radius: 19px;
             font-weight: 700;
             font-size: 15px;
             font-family: Roboto;
-            border: none;
+            border: 1px solid rgba(37,99,235,0.4);
         """)
         name_lbl = QLabel(user.ho_ten if user else "")
         name_lbl.setStyleSheet(f"font-size: 13px; font-weight: 600; color: {TEXT_LIGHT}; border: none; font-family: Roboto;")
@@ -119,9 +127,9 @@ class MainWindow(QMainWindow):
         btn_logout.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_logout.setStyleSheet(f"""
             QPushButton {{
-                background: #FEF2F2;
-                color: #EF4444;
-                border: 1px solid #FECACA;
+                background: rgba(239,68,68,0.1);
+                color: #FCA5A5;
+                border: 1px solid rgba(239,68,68,0.3);
                 border-radius: 7px;
                 font-size: 13px;
                 font-family: Roboto;
@@ -151,14 +159,14 @@ class MainWindow(QMainWindow):
                 color: {TEXT_MUTED};
             }}
             QPushButton:hover {{
-                background: #EFF6FF;
-                color: {ACCENT};
-                border-left: 3px solid #BFDBFE;
+                background: rgba(37,99,235,0.12);
+                color: #93C5FD;
+                border-left: 3px solid rgba(37,99,235,0.5);
             }}
             QPushButton:checked {{
-                background: #DBEAFE;
-                color: {ACCENT};
-                border-left: 3px solid {HIGHLIGHT};
+                background: rgba(37,99,235,0.2);
+                color: #BFDBFE;
+                border-left: 3px solid {ACCENT};
                 font-weight: 700;
             }}
         """)
